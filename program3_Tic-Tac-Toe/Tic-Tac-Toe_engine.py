@@ -44,3 +44,42 @@ def render(board):
 
 
 print(render(board))
+
+
+# =============================================================================
+#  Get player input
+# =============================================================================
+def get_move():
+    x =input("what's your move's X co-ordinate? : ")
+    y =input("what's your move's Y co-ordinate? : ")
+    co_ordinate =(int(x),int(y))
+    return co_ordinate
+
+move_coords = get_move()
+print(move_coords)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
