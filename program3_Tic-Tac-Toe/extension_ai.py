@@ -101,9 +101,6 @@ def render(board):
 # Execute moves
 # =============================================================================
 
-
-
-
 def make_move(board,move_coords,sign):
     i = 0
     j = 0
