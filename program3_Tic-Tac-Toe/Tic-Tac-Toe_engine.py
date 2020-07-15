@@ -1,3 +1,4 @@
+import numpy as np
 def new_board():
     new_empty_board = [
       [None, None, None],
@@ -68,7 +69,7 @@ def get_move():
 # =============================================================================
 
 
-board = new_board()#board type is list
+
 
 def make_move(board,move_coords,sign):
     i = 0
@@ -84,7 +85,44 @@ def make_move(board,move_coords,sign):
         else:
             i+=1
     return board
+# =============================================================================
+# check for winners
+# =============================================================================    
 
+def get_winner(board):   
+#try to get the measure of fuction'get_winner'
+    winner_board = np.array(board)
+    #.astype change true or false to 1 or 0
+    #if it is 'o' the gird changed to 1 and if it is 'x' the gird changed to -1
+    #if it is None, the grid changed to 0
+    check_board = (winner_board == 'o').astype(int) - (winner_board == 'x').astype(int)
+
+    #check_vector is (1,1,1)
+    check_vector = np.ones((3,1))   
+    result1 = check_board@check_vector #转置，行变列，相乘后判断每一行是否有3或-3
+    result2 = check_board.transpose()@check_vector#可以判断每一列是否有-3和3
+    #[1. 1. 1.]*[[ 1 -1  1] 
+     #           [ 0  1  1]
+     #           [ 1 -1  1]]
+     #trace 是对角线相加
+    result3 = np.trace(check_board)
+    
+    for element1 in result1:
+        if element1 == 3 or element1 == -3:
+            return True
+        
+    for element2 in result2:
+        if element2 == 3 or element2 == -3:
+            return True
+
+
+    #for element3 in result3:
+    if result3 == 3 or result3 == -3:
+        return True
+    
+    return False
+        
+        
 # =============================================================================
 # players take alternate moves until the board fills up
 # =============================================================================
@@ -113,7 +151,8 @@ def make_move(board,move_coords,sign):
 # board_update1 = make_move(board_update,move_coords1,"x") 
 # print(render(board_update1))       
 
-     
+board = new_board()#board type is list 
+counter = 0    
 while True:
     board_update = board_update1 =""
     while True:
@@ -129,7 +168,14 @@ while True:
     board_update = make_move(board,move_coords,"o")
     
     past_board = render(board_update)
+    counter +=1
     print(past_board)
+    if get_winner(board_update):
+        winner=0
+        break
+    if counter == 9:
+        winner = -1
+        break
     
 
 
@@ -140,21 +186,19 @@ while True:
         else:
             print("invalid move, try again!")
     
-    board_update1 = make_move(board_update,move_coords1,"x") 
+    board_update1 = make_move(board_update,move_coords1,"x")
+    counter +=1
     print(render(board_update1))
+    if get_winner(board_update1):
+        winner=1
+        break
     
-# =============================================================================
-# check for winners
-# =============================================================================    
-    
-    
-
-
-    
-
-    
-
-
+if winner ==0:
+    print("o player wins!")
+elif winner == 1:
+    print("x player wins!")
+else:
+    print("Draw!")
 
 
 
