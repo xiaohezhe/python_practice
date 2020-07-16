@@ -1,9 +1,9 @@
 import numpy as np
 import random
 board = [
-  ['x','o', None],
-  [None, None, 'x'],
-  [None, None,'o' ]
+  [None, 'x', None],
+  ['x', 'o', None],
+  ['o', None, None]
 ]
 # def random_ai
 
@@ -47,12 +47,12 @@ def finds_winning_moves_ai(board,player):
     result2 = check_board.transpose()@check_vector#可以判断每一列是否有-3和3
     #trace 是对角线相加
     result3 = np.trace(check_board)
-
+    result4 = check_board[0][2]+check_board[1][1]+check_board[2][0]
     
     legal_moves = []
     legal_moves1 = []
     if player == 'x':
-        if ((result3 == -2) | np.any(np.array(result2) == -2)| np.any(np.array(result1) == -2 )):
+        if ((result3 == -2) |(result4 == -2) | np.any(np.array(result2) == -2)| np.any(np.array(result1) == -2 )):
             if result3 == -2:
                 if check_board[0][0] == 0:
                     new_board_coordinate = (0,0)
@@ -60,6 +60,13 @@ def finds_winning_moves_ai(board,player):
                     new_board_coordinate = (1,1)
                 elif check_board[2][2] == 0:
                     new_board_coordinate = (2,2)
+            elif result4 ==-2:
+                if check_board[0][2] == 0:
+                    new_board_coordinate = (0,2)
+                elif check_board[1][1] == 0:
+                    new_board_coordinate = (1,1)
+                elif check_board[2][0] == 0:
+                    new_board_coordinate = (2,0)                
             else:
                 for a,b in enumerate(result1):
                     if b == -2:# 'x' player
@@ -84,7 +91,7 @@ def finds_winning_moves_ai(board,player):
                 
     
     elif player =='o':
-        if ((result3 == 2) | np.any(np.array(result2) == 2)| np.any(np.array(result1) == 2 )):
+        if ((result3 == 2) | (result4 == 2) |np.any(np.array(result2) == 2)| np.any(np.array(result1) == 2 )):
             if result3 == 2:
                 if check_board[0][0] == 0:
                     new_board_coordinate = (0,0)
@@ -92,6 +99,13 @@ def finds_winning_moves_ai(board,player):
                     new_board_coordinate = (1,1)
                 elif check_board[2][2] == 0:
                     new_board_coordinate = (2,2)
+            elif result4 ==2:
+                if check_board[0][2] == 0:
+                    new_board_coordinate = (0,2)
+                elif check_board[1][1] == 0:
+                    new_board_coordinate = (1,1)
+                elif check_board[2][0] == 0:
+                    new_board_coordinate = (2,0)
             else:
                 for a,b in enumerate(result1):
                     if b == 2:# 'x' player
@@ -111,8 +125,8 @@ def finds_winning_moves_ai(board,player):
             for row,element in enumerate(board):
                 for ind,etc in enumerate(element):
                     if etc is None:
-                        legal_moves.append((row,ind))    
-            new_board_coordinate = random.choice(legal_moves)               
+                        legal_moves1.append((row,ind))    
+            new_board_coordinate = random.choice(legal_moves1)               
                 
                 
     return new_board_coordinate
