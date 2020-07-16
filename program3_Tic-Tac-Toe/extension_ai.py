@@ -280,56 +280,86 @@ def get_winner(board):
 
 # board_update1 = make_move(board_update,move_coords1,"x") 
 # print(render(board_update1))       
-
-board = new_board()#board type is list 
-counter = 0    
-while True:
-    board_update = board_update1 =""
+def play():
+    board = new_board()#board type is list 
+    counter = 0    
     while True:
-        move_coords = finds_winning_and_losing_moves_ai(board,'o')
-        print("@@@@@@@@@ o player")
-        print(move_coords)
-        #如果is_valid_move函数返回值为真，则break,否则无效，再输一遍
+        board_update = board_update1 =""
+        while True:
+            move_coords = finds_winning_and_losing_moves_ai(board,'o')
+            print("@@@@@@@@@ o player")
+            print(move_coords)
+            #如果is_valid_move函数返回值为真，则break,否则无效，再输一遍
+            
+            if is_valid_move(board,move_coords):
+                break
+            else:
+                print("invalid move, try again!")
         
-        if is_valid_move(board,move_coords):
+        board_update = make_move(board,move_coords,"o")    
+        past_board = render(board_update)
+        counter +=1
+        print(past_board)
+        if get_winner(board_update):
+            winner=0
             break
-        else:
-            print("invalid move, try again!")
+        if counter == 9:
+            winner = -1
+            break
+        
     
-    board_update = make_move(board,move_coords,"o")    
-    past_board = render(board_update)
-    counter +=1
-    print(past_board)
-    if get_winner(board_update):
-        winner=0
-        break
-    if counter == 9:
-        winner = -1
-        break
     
+        while True:
+            move_coords1 = finds_winning_and_losing_moves_ai(board,'x')
+            print("@@@@@@@@@ x player")
+            print(move_coords1)
+            if is_valid_move(board,move_coords1):
+                break
+            else:
+                print("invalid move, try again!")
+        
+        board_update1 = make_move(board_update,move_coords1,"x")
+        counter +=1
+        print(render(board_update1))
+        if get_winner(board_update1):
+            winner=1
+            break
+        
+    if winner ==0:
+        print("o player wins!")
+        return 1
+    elif winner == 1:
+        print("x player wins!")
+        return -1
+    elif winner ==-1:
+        print("Draw!") 
+        return 0
+    return False
 
 
-    while True:
-        move_coords1 = finds_winning_and_losing_moves_ai(board,'x')
-        print("@@@@@@@@@ x player")
-        print(move_coords1)
-        if is_valid_move(board,move_coords1):
-            break
+def repeated_battle():
+    score_o =0
+    score_x =0
+    elselist=[]
+    score_draw =0
+    for i in range(1000):
+        check_winner = play()
+        if check_winner ==1:
+            score_o += 1
+        elif check_winner == -1:
+            score_x +=1
+        elif check_winner == 0:
+            score_draw +=1
         else:
-            print("invalid move, try again!")
+            elselist.append(check_winner)
+    print(i,score_o,score_x,score_draw)
+    print(elselist)
+    print(len(elselist))
     
-    board_update1 = make_move(board_update,move_coords1,"x")
-    counter +=1
-    print(render(board_update1))
-    if get_winner(board_update1):
-        winner=1
-        break
     
-if winner ==0:
-    print("o player wins!")
-elif winner == 1:
-    print("x player wins!")
-else:
-    print("Draw!")    
+repeated_battle()
+
+
+    
            
             
