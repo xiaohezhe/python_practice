@@ -30,7 +30,7 @@ board = [
 #     board_coordinate = random.choice(legal_moves)#select the element of a list randomly
     
 #     return board_coordinate
-def finds_winning_moves_ai(board,player):
+def finds_winning_and_losing_moves_ai(board,player):
     winner_board = np.array(board)
     #.astype change true or false to 1 or 0
     #if it is 'o' the gird changed to 1 and if it is 'x' the gird changed to -1
@@ -47,15 +47,16 @@ def finds_winning_moves_ai(board,player):
     legal_moves = []
     legal_moves1 = []
     if player == 'x':
-        if ((result3 == -2) |(result4 == -2) | np.any(np.array(result2) == -2)| np.any(np.array(result1) == -2 )):
-            if result3 == -2:
+        if ((result3 == -2) |(result4 == -2) |(result3 == 2) |(result4 == 2) | np.any(np.array(result2) == -2)| np.any(np.array(result1) == -2 )| np.any(np.array(result2) == 2)| np.any(np.array(result1) == 2 )):
+            if ((result3 ==-2) | (result3 ==2)):
                 if check_board[0][0] == 0:
                     new_board_coordinate = (0,0)
                 elif check_board[1][1] == 0:
                     new_board_coordinate = (1,1)
                 elif check_board[2][2] == 0:
                     new_board_coordinate = (2,2)
-            elif result4 ==-2:
+                    # 中心线上已经有两个'o'，result3,4 ==2
+            elif ((result4 ==-2) | (result4 ==2)):
                 if check_board[0][2] == 0:
                     new_board_coordinate = (0,2)
                 elif check_board[1][1] == 0:
@@ -64,14 +65,14 @@ def finds_winning_moves_ai(board,player):
                     new_board_coordinate = (2,0)                
             else:
                 for a,b in enumerate(result1):
-                    if b == -2:# 'x' player
+                    if ((b == -2) | (b == 2)):# 一行里已经有两个'o'
                         for c,d in enumerate(check_board[a]):
                             if d ==0:
                                 new_board_coordinate =((a,c))
                 
                 
                 for a,b in enumerate(result2):
-                    if b == -2:# 'x' player
+                    if ((b == -2) | (b == 2)):# 一列里已经有两个'o'
                         for c,d in enumerate(check_board.transpose()[a]):
                             if d ==0:
                                 new_board_coordinate =((c,a))
@@ -86,15 +87,16 @@ def finds_winning_moves_ai(board,player):
                 
     
     elif player =='o':
-        if ((result3 == 2) | (result4 == 2) |np.any(np.array(result2) == 2)| np.any(np.array(result1) == 2 )):
-            if result3 == 2:
+        if ((result3 == -2) |(result4 == -2) |(result3 == 2) |(result4 == 2) | np.any(np.array(result2) == -2)| np.any(np.array(result1) == -2 )| np.any(np.array(result2) == 2)| np.any(np.array(result1) == 2 )):
+            # 中心线上已经有两个'x'，result3,4 ==2
+            if ((result3 ==-2) | (result3 ==2)):
                 if check_board[0][0] == 0:
                     new_board_coordinate = (0,0)
                 elif check_board[1][1] == 0:
                     new_board_coordinate = (1,1)
                 elif check_board[2][2] == 0:
                     new_board_coordinate = (2,2)
-            elif result4 ==2:
+            elif ((result4 ==-2) | (result4 ==2)):
                 if check_board[0][2] == 0:
                     new_board_coordinate = (0,2)
                 elif check_board[1][1] == 0:
@@ -103,14 +105,14 @@ def finds_winning_moves_ai(board,player):
                     new_board_coordinate = (2,0)
             else:
                 for a,b in enumerate(result1):
-                    if b == 2:# 'x' player
+                    if ((b == -2) | (b == 2)):# 一行里已经有两个'x'
                         for c,d in enumerate(check_board[a]):
                             if d ==0:
                                 new_board_coordinate =((a,c))
                 
                 
                 for a,b in enumerate(result2):
-                    if b == 2:# 'x' player
+                    if ((b == -2) | (b == 2)):# 一列里已经有两个'x'
                         for c,d in enumerate(check_board.transpose()[a]):
                             if d ==0:
                                 new_board_coordinate =((c,a))
@@ -284,7 +286,7 @@ counter = 0
 while True:
     board_update = board_update1 =""
     while True:
-        move_coords = finds_winning_moves_ai(board,'o')
+        move_coords = finds_winning_and_losing_moves_ai(board,'o')
         print("@@@@@@@@@ o player")
         print(move_coords)
         #如果is_valid_move函数返回值为真，则break,否则无效，再输一遍
@@ -308,7 +310,7 @@ while True:
 
 
     while True:
-        move_coords1 = finds_winning_moves_ai(board,'x')
+        move_coords1 = finds_winning_and_losing_moves_ai(board,'x')
         print("@@@@@@@@@ x player")
         print(move_coords1)
         if is_valid_move(board,move_coords1):
