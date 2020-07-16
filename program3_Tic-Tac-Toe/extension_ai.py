@@ -18,19 +18,113 @@ board = [
 # #     for ind,etc in enumerate(element):
 # #         print((row,ind))
 # =============================================================================
-def random_ai(board, player):
-    legal_moves = []
-    for row,element in enumerate(board):
-        for ind,etc in enumerate(element):
-            if etc is None:
-                legal_moves.append((row,ind))
+# def random_ai(board, player):
+#     legal_moves = []
+#     for row,element in enumerate(board):
+#         for ind,etc in enumerate(element):
+#             if etc is None:
+#                 legal_moves.append((row,ind))
         
-    # legal_moves is [(0, 0), (0, 1), (1, 0), (1, 1)]
+#     # legal_moves is [(0, 0), (0, 1), (1, 0), (1, 1)]
     
-    board_coordinate = random.choice(legal_moves)#select the element of a list randomly
+#     board_coordinate = random.choice(legal_moves)#select the element of a list randomly
     
-    return board_coordinate
-         
+#     return board_coordinate
+def finds_winning_moves_ai(board,player):
+    winner_board = np.array(board)
+    #.astype change true or false to 1 or 0
+    #if it is 'o' the gird changed to 1 and if it is 'x' the gird changed to -1
+    #if it is None, the grid changed to 0
+    check_board = (winner_board == 'o').astype(int) - (winner_board == 'x').astype(int)
+    #check_vector is (1,1,1)
+    check_vector = np.ones((3,1))   
+    result1 = check_board@check_vector #转置，行变列，相乘后判断每一行是否有3或-3
+    result2 = check_board.transpose()@check_vector#可以判断每一列是否有-3和3
+    #trace 是对角线相加
+    result3 = np.trace(check_board)
+    result4 = check_board[0][2]+check_board[1][1]+check_board[2][0]
+    
+    legal_moves = []
+    legal_moves1 = []
+    if player == 'x':
+        if ((result3 == -2) |(result4 == -2) | np.any(np.array(result2) == -2)| np.any(np.array(result1) == -2 )):
+            if result3 == -2:
+                if check_board[0][0] == 0:
+                    new_board_coordinate = (0,0)
+                elif check_board[1][1] == 0:
+                    new_board_coordinate = (1,1)
+                elif check_board[2][2] == 0:
+                    new_board_coordinate = (2,2)
+            elif result4 ==-2:
+                if check_board[0][2] == 0:
+                    new_board_coordinate = (0,2)
+                elif check_board[1][1] == 0:
+                    new_board_coordinate = (1,1)
+                elif check_board[2][0] == 0:
+                    new_board_coordinate = (2,0)                
+            else:
+                for a,b in enumerate(result1):
+                    if b == -2:# 'x' player
+                        for c,d in enumerate(check_board[a]):
+                            if d ==0:
+                                new_board_coordinate =((a,c))
+                
+                
+                for a,b in enumerate(result2):
+                    if b == -2:# 'x' player
+                        for c,d in enumerate(check_board.transpose()[a]):
+                            if d ==0:
+                                new_board_coordinate =((c,a))
+        else:
+    
+                    
+            for row,element in enumerate(board):
+                for ind,etc in enumerate(element):
+                    if etc is None:
+                        legal_moves.append((row,ind))    
+            new_board_coordinate = random.choice(legal_moves)
+                
+    
+    elif player =='o':
+        if ((result3 == 2) | (result4 == 2) |np.any(np.array(result2) == 2)| np.any(np.array(result1) == 2 )):
+            if result3 == 2:
+                if check_board[0][0] == 0:
+                    new_board_coordinate = (0,0)
+                elif check_board[1][1] == 0:
+                    new_board_coordinate = (1,1)
+                elif check_board[2][2] == 0:
+                    new_board_coordinate = (2,2)
+            elif result4 ==2:
+                if check_board[0][2] == 0:
+                    new_board_coordinate = (0,2)
+                elif check_board[1][1] == 0:
+                    new_board_coordinate = (1,1)
+                elif check_board[2][0] == 0:
+                    new_board_coordinate = (2,0)
+            else:
+                for a,b in enumerate(result1):
+                    if b == 2:# 'x' player
+                        for c,d in enumerate(check_board[a]):
+                            if d ==0:
+                                new_board_coordinate =((a,c))
+                
+                
+                for a,b in enumerate(result2):
+                    if b == 2:# 'x' player
+                        for c,d in enumerate(check_board.transpose()[a]):
+                            if d ==0:
+                                new_board_coordinate =((c,a))
+        else:
+    
+                    
+            for row,element in enumerate(board):
+                for ind,etc in enumerate(element):
+                    if etc is None:
+                        legal_moves1.append((row,ind))    
+            new_board_coordinate = random.choice(legal_moves1)               
+                
+                
+    return new_board_coordinate
 # =============================================================================
 def new_board():
     new_empty_board = [
@@ -136,6 +230,7 @@ def get_winner(board):
      #           [ 1 -1  1]]
      #trace 是对角线相加
     result3 = np.trace(check_board)
+    result4 = check_board[0][2]+check_board[1][1]+check_board[2][0]
     
     for element1 in result1:
         if element1 == 3 or element1 == -3:
@@ -149,6 +244,9 @@ def get_winner(board):
     #for element3 in result3:
     if result3 == 3 or result3 == -3:
         return True
+    
+    if result4 == 3 or result4 == -3:
+        return True 
     
     return False
         
@@ -186,7 +284,8 @@ counter = 0
 while True:
     board_update = board_update1 =""
     while True:
-        move_coords = random_ai(board,'x')
+        move_coords = finds_winning_moves_ai(board,'o')
+        print("@@@@@@@@@ o player")
         print(move_coords)
         #如果is_valid_move函数返回值为真，则break,否则无效，再输一遍
         
@@ -195,8 +294,7 @@ while True:
         else:
             print("invalid move, try again!")
     
-    board_update = make_move(board,move_coords,"o")
-    
+    board_update = make_move(board,move_coords,"o")    
     past_board = render(board_update)
     counter +=1
     print(past_board)
@@ -210,7 +308,9 @@ while True:
 
 
     while True:
-        move_coords1 = random_ai(board,'x')
+        move_coords1 = finds_winning_moves_ai(board,'x')
+        print("@@@@@@@@@ x player")
+        print(move_coords1)
         if is_valid_move(board,move_coords1):
             break
         else:
